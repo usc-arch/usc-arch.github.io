@@ -38,23 +38,23 @@ h1 {
 
 .zh {
   display: block;
-  font-size: clamp(1.5rem, 5vw, 2.4rem);
+  font-size: clamp(1.1rem, 3.2vw, 1.5rem);
   letter-spacing: 0.08em;
 }
 
 .en {
   display: block;
-  margin-top: 0.9rem;
+  margin-top: 0.75rem;
   color: var(--muted);
-  font-size: clamp(0.72rem, 2vw, 0.85rem);
+  font-size: clamp(0.62rem, 1.5vw, 0.7rem);
   font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .link {
-  margin: 2.5rem 0 0;
-  font-size: 0.9rem;
+  margin: 2rem 0 0;
+  font-size: 0.78rem;
   letter-spacing: 0.04em;
 }
 
