@@ -55,6 +55,7 @@ a { color: inherit; }
 .scene {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   min-height: 100svh;
   padding: calc(var(--header) + 44px) var(--pad) 48px;
   scroll-snap-align: start;
