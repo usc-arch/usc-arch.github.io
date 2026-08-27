@@ -50,6 +50,7 @@ order:
 
 - [個人 Facebook](https://www.facebook.com/share/14n8GoE8MLs/?mibextid=wwXIfr)
 - [美學課 Facebook 社團](https://www.facebook.com/share/g/1DfXF14tcX/?mibextid=wwXIfr)
+- [Instagram｜@yanchunghsien](https://www.instagram.com/yanchunghsien)
 
 ## 9/15 選組 / Studio Selection
 
