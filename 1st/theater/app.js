@@ -54,9 +54,9 @@ drawer.addEventListener('keydown', event => {
 
 let settleTimer;
 
-// scroll-snap: mandatory 會干擾錨點跳轉與平滑捲動（行動版特別容易整個失效，
-// 表現為點了目錄卻停在原地）。因此捲動期間停用 snap，
-// 並在時間到時強制校正位置——即使平滑動畫沒跑起來，也一定會到達目標場景。
+// 捲動一律用即時定位：iOS Safari 對平滑捲動 + scroll-snap 的處理不可靠，
+// 動畫沒跑起來時使用者看到的就是「點了沒反應」。定位後再校正一次，
+// 確保瀏覽器的 snap 不會把畫面拉走。
 function goToScene(scene) {
   if (!scene) return;
   setActive(scene);
@@ -64,27 +64,15 @@ function goToScene(scene) {
 
   const root = document.documentElement;
   const end = Math.max(0, Math.min(scene.offsetTop, root.scrollHeight - window.innerHeight));
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   root.style.scrollSnapType = 'none';
-  root.style.scrollBehavior = 'auto';
+  window.scrollTo(0, end);
+
   window.clearTimeout(settleTimer);
-
-  if (reduce) {
-    window.scrollTo(0, end);
-    settle(end);
-    return;
-  }
-
-  window.scrollTo({ top: end, behavior: 'smooth' });
-  settleTimer = window.setTimeout(() => settle(end), 600);
-}
-
-function settle(end) {
-  const root = document.documentElement;
-  if (Math.abs(window.scrollY - end) > 2) window.scrollTo(0, end);
-  root.style.scrollSnapType = '';
-  root.style.scrollBehavior = '';
+  settleTimer = window.setTimeout(() => {
+    if (Math.abs(window.scrollY - end) > 2) window.scrollTo(0, end);
+    root.style.scrollSnapType = '';
+  }, 150);
 }
 
 function setActive(scene) {

@@ -11,8 +11,11 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-snap-type: y mandatory; background: var(--paper); }
-body { margin: 0; background: var(--paper); overflow-x: hidden; }
+/* iOS Safari 在 scroll-behavior:smooth + scroll-snap:mandatory + body overflow-x:hidden
+   的組合下會直接忽略程式化捲動，導致目錄點了不動。改用 proximity，
+   捲動一律由 app.js 控制；overflow-x 用 clip，避免 body 變成捲動容器。 */
+html { scroll-snap-type: y proximity; overflow-x: clip; background: var(--paper); }
+body { margin: 0; background: var(--paper); overflow-x: clip; }
 a { color: inherit; }
 
 .topbar {
@@ -55,11 +58,9 @@ a { color: inherit; }
 .scene {
   position: relative;
   min-height: 100vh;
-  min-height: 100dvh;
   min-height: 100svh;
   padding: calc(var(--header) + 44px) var(--pad) 48px;
   scroll-snap-align: start;
-  scroll-margin-top: var(--header);
   overflow: hidden;
   border-bottom: 1px solid var(--line);
 }
