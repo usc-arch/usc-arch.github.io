@@ -53,64 +53,26 @@ drawer.addEventListener('keydown', event => {
 });
 
 let settleTimer;
-let scrollRaf;
 
-// 捲動由 JS 自行補間：iOS Safari 對原生平滑捲動 + scroll-snap 的處理不可靠。
-// 動畫期間停用 snap；另外用 setTimeout 保底，即使 requestAnimationFrame
-// 完全沒跑（背景分頁、省電模式），時間到仍會強制定位到目標場景。
+// 捲動一律用即時定位：iOS Safari 對平滑捲動 + scroll-snap 的處理不可靠，
+// 動畫沒跑起來時使用者看到的就是「點了沒反應」。定位後再校正一次，
+// 確保瀏覽器的 snap 不會把畫面拉走。
 function goToScene(scene) {
   if (!scene) return;
   setActive(scene);
   history.replaceState(null, '', `#${scene.id}`);
 
   const root = document.documentElement;
-  const from = window.scrollY;
-  const to = Math.max(0, Math.min(scene.offsetTop, root.scrollHeight - window.innerHeight));
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const duration = reduce ? 0 : Math.min(460, Math.max(220, Math.abs(to - from) * 0.32));
+  const end = Math.max(0, Math.min(scene.offsetTop, root.scrollHeight - window.innerHeight));
 
-  stopScroll();
   root.style.scrollSnapType = 'none';
+  window.scrollTo(0, end);
 
-  if (duration === 0 || Math.abs(to - from) < 2) {
-    finishScroll(to);
-    return;
-  }
-
-  // 使用者一碰就停手，交還控制權
-  window.addEventListener('touchstart', onUserScroll, { passive: true });
-  window.addEventListener('wheel', onUserScroll, { passive: true });
-
-  const t0 = performance.now();
-  const step = now => {
-    const p = Math.min(1, (now - t0) / duration);
-    const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
-    window.scrollTo(0, from + (to - from) * eased);
-    if (p < 1) scrollRaf = requestAnimationFrame(step);
-    else finishScroll(to);
-  };
-  scrollRaf = requestAnimationFrame(step);
-
-  // 保底：動畫沒跑起來也一定到位
-  settleTimer = window.setTimeout(() => finishScroll(to), duration + 220);
-}
-
-function onUserScroll() {
-  stopScroll();
-  document.documentElement.style.scrollSnapType = '';
-}
-
-function stopScroll() {
-  cancelAnimationFrame(scrollRaf);
   window.clearTimeout(settleTimer);
-  window.removeEventListener('touchstart', onUserScroll);
-  window.removeEventListener('wheel', onUserScroll);
-}
-
-function finishScroll(to) {
-  stopScroll();
-  if (Math.abs(window.scrollY - to) > 2) window.scrollTo(0, to);
-  document.documentElement.style.scrollSnapType = '';
+  settleTimer = window.setTimeout(() => {
+    if (Math.abs(window.scrollY - end) > 2) window.scrollTo(0, end);
+    root.style.scrollSnapType = '';
+  }, 150);
 }
 
 function setActive(scene) {
