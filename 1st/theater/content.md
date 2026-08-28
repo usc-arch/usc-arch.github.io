@@ -34,7 +34,7 @@ order:
 
 ## 彭雅倫
 
-- [Creative Expo Taiwan｜文化策展資料](https://creativexpo.tw/zh-TW/cultural_curations/10)
+- [Instagram｜@yalunpeng2024](https://www.instagram.com/yalunpeng2024)
 
 ## 葉佳緯
 
